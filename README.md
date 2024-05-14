@@ -6,7 +6,7 @@
 
 ## About My Project
 
-Remember to write something about this f'king project =)
+Remember to write something about this project =)
 
 ## License
 
