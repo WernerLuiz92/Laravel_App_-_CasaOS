@@ -18,3 +18,5 @@ yarn-error.log
 /.idea
 /.vscode
 docker-compose.yml.bak
+package-lock.json
+composer.lock
