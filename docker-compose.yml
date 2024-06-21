@@ -1,11 +1,10 @@
-name: my_laravel_app
 services:
   laravel_app:
     build:
-      context: /DATA/AppData/second-brain-app/docker/8.3
+      context: ./docker/8.3
       dockerfile: Dockerfile
       args:
-        WWWGROUP: ""
+        WWWGROUP: '${WWWGROUP}'
     cpu_shares: 90
     command: []
     container_name: my_laravel_app
@@ -14,37 +13,78 @@ services:
         limits:
           memory: 4096M
     environment:
-      - IGNITION_LOCAL_SITES_PATH=/DATA/Projects/Laravel/my_laravel_app
-      - LARAVEL_SAIL=1
-      - WWWUSER=werner
-      - XDEBUG_CONFIG=client_host=host.docker.internal
-      - XDEBUG_MODE=off
-    hostname: my_laravel_app
+      WWWUSER: '${WWWUSER}'
+      LARAVEL_SAIL: 1
+      XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
+      XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
+      IGNITION_LOCAL_SITES_PATH: '${PWD}'
     image: sail-8.3/app:latest
-    labels:
-      icon: https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/laravel/laravel-original.svg
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
     ports:
-      - target: 80
-        published: "10888"
-        protocol: tcp
-    privileged: true
-    restart: unless-stopped
+      - '${APP_PORT:-80}:80'
+      - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
     volumes:
-      - type: bind
-        source: /DATA/Projects/Laravel/my_laravel_app
-        target: /var/www/html
-    devices: []
-    cap_add: []
-    network_mode: bridge
-x-casaos:
-  author: self
-  category: self
-  hostname: ""
-  icon: https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/laravel/laravel-original.svg
-  index: /
-  is_uncontrolled: false
-  port_map: "10888"
-  scheme: http
-  store_app_id: my_laravel_app
-  title:
-    custom: Laravel App
+      - '.:/var/www/html'
+    networks:
+      - sail
+    depends_on:
+      - mariadb
+      - mongodb
+      - redis
+
+  mariadb:
+    image: 'mariadb:10'
+    ports:
+      - '${FORWARD_DB_PORT:-3306}:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_DATABASE: '${DB_DATABASE}'
+      MYSQL_USER: '${DB_USERNAME}'
+      MYSQL_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    volumes:
+      - 'sail-mariadb:/var/lib/mysql'
+      - './vendor/laravel/sail/database/mysql/create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh'
+    networks:
+      - sail
+    healthcheck:
+      test:
+        - CMD
+        - mysqladmin
+        - ping
+        - '-p${DB_PASSWORD}'
+      retries: 3
+      timeout: 5s
+
+  mongodb:
+    image: 'mongo:latest'
+    container_name: my_mongo
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: '${MONGO_INITDB_ROOT_USERNAME:-root}'
+      MONGO_INITDB_ROOT_PASSWORD: '${MONGO_INITDB_ROOT_PASSWORD:-rootpassword}'
+    volumes:
+      - 'mongo-data:/data/db'
+    networks:
+      - sail
+
+  redis:
+    image: 'redis:latest'
+    container_name: my_redis
+    ports:
+      - '6379:6379'
+    networks:
+      - sail
+
+networks:
+  sail:
+    driver: bridge
+
+volumes:
+  sail-mariadb:
+    driver: local
+  mongo-data:
+    driver: local
