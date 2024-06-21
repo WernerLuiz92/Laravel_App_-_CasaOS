@@ -5,7 +5,7 @@ services:
       context: /DATA/Projects/Laravel/my_laravel_app/docker/8.3
       dockerfile: Dockerfile
       args:
-        WWWGROUP: ""
+        WWWGROUP: "1000"
     cpu_shares: 90
     command: []
     container_name: my_laravel_app
