@@ -2,7 +2,7 @@ name: my_laravel_app
 services:
   laravel_app:
     build:
-      context: /DATA/AppData/second-brain-app/docker/8.3
+      context: /DATA/Projects/Laravel/my_laravel_app/docker/8.3
       dockerfile: Dockerfile
       args:
         WWWGROUP: ""
@@ -47,4 +47,4 @@ x-casaos:
   scheme: http
   store_app_id: my_laravel_app
   title:
-    custom: Laravel App
+    custom: My Laravel App
