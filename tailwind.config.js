@@ -17,8 +17,25 @@ export default {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
+            colors: {
+                'rhino': {
+                    '50': '#f3f6fb',
+                    '100': '#e4ecf5',
+                    '200': '#cfdeee',
+                    '300': '#adc8e3',
+                    '400': '#86abd4',
+                    '500': '#6990c8',
+                    '600': '#5678ba',
+                    '700': '#4b67aa',
+                    '800': '#42558b',
+                    '900': '#2f3c5c',
+                    '950': '#262e45',
+                },
+            },            
         },
     },
 
     plugins: [forms, typography],
+
+    darkMode: 'selector',
 };

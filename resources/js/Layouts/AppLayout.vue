@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import ApplicationMark from '@/Components/ApplicationMark.vue';
 import Banner from '@/Components/Banner.vue';
@@ -7,6 +7,7 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
+import DarkModeSwitch from '@/Components/DarkModeSwitch.vue';
 
 defineProps({
     title: String,
@@ -25,6 +26,26 @@ const switchToTeam = (team) => {
 const logout = () => {
     router.post(route('logout'));
 };
+
+const isDark = ref(JSON.parse(localStorage.getItem('isDark')) || false);
+
+const switchTheme = (newState) => {
+    isDark.value = newState;
+    if (isDark.value) {
+        document.documentElement.classList.add('dark');
+    } else {
+        document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('isDark', JSON.stringify(isDark.value));
+};
+
+onMounted(() => {
+    if (isDark.value) {
+        document.documentElement.classList.add('dark');
+    } else {
+        document.documentElement.classList.remove('dark');
+    }
+});
 </script>
 
 <template>
@@ -42,7 +63,7 @@ const logout = () => {
                             <!-- Logo -->
                             <div class="shrink-0 flex items-center">
                                 <Link :href="route('dashboard')">
-                                    <ApplicationMark class="block h-9 w-auto" />
+                                    <ApplicationMark class="block h-14 w-auto" />
                                 </Link>
                             </div>
 
@@ -53,6 +74,7 @@ const logout = () => {
                                 </NavLink>
                             </div>
                         </div>
+
 
                         <div class="hidden sm:flex sm:items-center sm:ms-6">
                             <div class="ms-3 relative">
@@ -157,6 +179,11 @@ const logout = () => {
                                     </template>
                                 </Dropdown>
                             </div>
+
+                            <!-- Dark Mode Switch -->
+                            <div class="hidden sm:flex sm:ml-4 min-[1400px]:fixed min-[1400px]:top-4 min-[1400px]:right-12">
+                                <DarkModeSwitch :initialState="isDark" @switched="switchTheme"/>
+                            </div>
                         </div>
 
                         <!-- Hamburger -->
@@ -184,6 +211,10 @@ const logout = () => {
                                     />
                                 </svg>
                             </button>
+                        </div>
+                        <!-- Dark Mode Switch -->
+                        <div class="block sm:hidden fixed top-4 right-12">
+                            <DarkModeSwitch :initialState="isDark" @switched="switchTheme"/>
                         </div>
                     </div>
                 </div>

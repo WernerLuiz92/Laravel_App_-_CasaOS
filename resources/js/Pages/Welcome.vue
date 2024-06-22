@@ -1,5 +1,7 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
+import { ref, onMounted } from 'vue';
+import DarkModeSwitch from '@/Components/DarkModeSwitch.vue';
 
 defineProps({
     canLogin: {
@@ -24,6 +26,26 @@ function handleImageError() {
     document.getElementById('docs-card-content')?.classList.add('!flex-row');
     document.getElementById('background')?.classList.add('!hidden');
 }
+
+const isDark = ref(JSON.parse(localStorage.getItem('isDark')) || false);
+
+const switchTheme = (newState) => {
+    isDark.value = newState;
+    if (isDark.value) {
+        document.documentElement.classList.add('dark');
+    } else {
+        document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('isDark', JSON.stringify(isDark.value));
+};
+
+onMounted(() => {
+    if (isDark.value) {
+        document.documentElement.classList.add('dark');
+    } else {
+        document.documentElement.classList.remove('dark');
+    }
+});
 </script>
 
 <template>
@@ -65,8 +87,8 @@ function handleImageError() {
                 </header>
 
                 <main class="mt-6">
-                    <div class="mb-8 text-center">
-                        <h1 class="text-4xl font-bold tracking-tight text-gray-200 sm:text-6xl">My Laravel App</h1>
+                    <div class="mb-8 text-center drop-shadow-md">
+                        <h1 class="text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-200 sm:text-6xl">My Laravel App</h1>
                     </div>
                     <div class="grid gap-6 lg:grid-cols-2 lg:gap-8">
                         <a
@@ -173,6 +195,12 @@ function handleImageError() {
                 <footer class="py-16 text-center text-sm text-black dark:text-white/70">
                     Laravel v{{ laravelVersion }} (PHP v{{ phpVersion }})
                 </footer>
+            </div>
+
+
+            <!-- Dark Mode Switch -->
+            <div class="fixed top-4 right-12">
+                <DarkModeSwitch :initialState="isDark" @switched="switchTheme"/>
             </div>
         </div>
     </div>
