@@ -22,7 +22,7 @@ services:
     hostname: my_laravel_app
     image: sail-8.3/app:latest
     labels:
-      icon: https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/laravel/laravel-original.svg
+      icon: https://raw.githubusercontent.com/WernerLuiz92/Laravel_App_-_CasaOS/main/resources/img/my_laravel_app_logo_1.svg
     ports:
       - target: 80
         published: "10888"
@@ -40,7 +40,7 @@ x-casaos:
   author: self
   category: self
   hostname: ""
-  icon: https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/laravel/laravel-original.svg
+  icon: https://raw.githubusercontent.com/WernerLuiz92/Laravel_App_-_CasaOS/main/resources/img/my_laravel_app_logo_1.svg
   index: /
   is_uncontrolled: false
   port_map: "10888"
