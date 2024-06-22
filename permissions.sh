@@ -2,7 +2,7 @@
 
 DEFAULT_USER=werner
 DEFAULT_GROUP=www-data
-HOME_DIR=/DATA/Projects/Laravel/simple_laravel_app-to_casaos
+HOME_DIR=/DATA/Projects/Laravel/my_laravel_app
 
 chown -R $DEFAULT_USER:$DEFAULT_GROUP $HOME_DIR
 chmod -R o-rxw $HOME_DIR/*
